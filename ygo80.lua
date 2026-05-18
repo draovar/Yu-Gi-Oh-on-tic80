@@ -1390,13 +1390,15 @@ end
 -- Returns the screen X,Y of a zone for player `plr`.
 --   row: "mon" | "st" | "fs" | "ed" | "gy" | "dk" | "hand"
 --   col: column index 1..3 for "mon"/"st" (ignored for special / hand zones)
+-- If row is "mon"/"st" and col is nil, X is returned as nil (callers that
+-- only need the row Y can write `local _,y=zoneXY(plr,"st")`).
 -- Encapsulates the player-side mirror (opp uses reflected column indices) in
 -- one place so every drawing/animation call site can stop duplicating the
 -- `(plr==1) and ... or ...` ternaries.
 function zoneXY(plr, row, col)
  local px = (plr==1)
- if     row=="mon"  then return px and COL[col] or COL[4-col], px and PY_M or OY_M
- elseif row=="st"   then return px and COL[col] or COL[4-col], px and PY_S or OY_S
+ if     row=="mon"  then return col and (px and COL[col] or COL[4-col]) or nil, px and PY_M or OY_M
+ elseif row=="st"   then return col and (px and COL[col] or COL[4-col]) or nil, px and PY_S or OY_S
  elseif row=="fs"   then return px and COL[0]   or COL[4],     px and PY_M or OY_M
  elseif row=="ed"   then return px and COL[4]   or COL[0],     px and PY_M or OY_M
  elseif row=="gy"   then return px and COL[0]   or COL[4],     px and PY_S or OY_S
